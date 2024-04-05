@@ -3,12 +3,11 @@
 {% block content %}
           <div class="col-8">
               <div class="d-flex gap-3 align-items-center">
-                  <h1>New Question</h1>
-                  <a href="/hot.html">Hot Questions</a>
+                  <h1>Hot Question</h1>
               </div>
               
               {% for question in questions %}
-                  {% include "layouts/question.html" %}
+                {% include 'layouts/question.html' %}
               {% endfor %}
                 <nav aria-label="Page navigation example">
                   <ul class="pagination">
@@ -20,4 +19,4 @@
                   </ul>
                 </nav>
           </div>
-{% endblock %}
+          {% endblock %}
