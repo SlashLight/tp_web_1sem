@@ -16,16 +16,16 @@
                       <div class="col-md-8">
                         <div class="card-body" style="height: 200px;">
                           <h3 class="card-title">
-                            <a href="/question/{{ question.id }}"> {{ question.title }} {{ question.id }}</a>
+                            <a href="{% url 'question' question.id%}"> {{ question.title }} {{ question.id }}</a>
                           </h3>
                           <p class="card-text">
                             {{ question.text }}
                           </p>
                           <div class="row d-flex position-absolute bottom-0">
-                            <a class="col-5" href="/question.html">answers (3)</a>
-                            <div class="col-7">
+                            <a class="col-7" href="/question.html">answers (3)</a>
+                            <div class="col-5">
                                 <span>Tags</span>
-                                <a href="/tag/{{ question.tags }}">{{ question.tags }}</a>
+                                <a href="{% url 'tag' question.tags %}">{{ question.tags }}</a>
                             </div>
                           </div>
                         </div>

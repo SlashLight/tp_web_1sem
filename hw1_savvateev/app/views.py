@@ -1,22 +1,32 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render
 
 # Create your views here.
 QUESTIONS = [
     {
         "title": f"Question{i}",
-        "id": f"{i}",
+        "id": i,
         "text": f"This is the question number {i}",
         "tags": f"tag{i % 2}"
-    } for i in range(10)
+    } for i in range(30)
 ]
 
 
+def paginate(questions_list, request, per_page=5):
+    paginator = Paginator(questions_list, per_page)
+    page_num = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_num)
+    return page_obj
+
+
 def index(request):
-    return render(request, 'index.html', {"questions": QUESTIONS})
+    page_obj = paginate(QUESTIONS, request)
+    return render(request, 'index.html', {"questions": page_obj})
 
 
 def hot(request):
-    return render(request, 'hot.html', {"questions": QUESTIONS[:5]})
+    page_obj = paginate(QUESTIONS[:15], request)
+    return render(request, 'hot.html', {"questions": page_obj})
 
 
 def question(request, question_id):
@@ -29,7 +39,8 @@ def tag(request, tag_name):
     for item in QUESTIONS:
         if item["tags"] == tag_name:
             items.append(item)
-    return render(request, 'tag.html', {'questions': items, 'tag_name': tag_name})
+    page_obj = paginate(items, request)
+    return render(request, 'tag.html', {'questions': page_obj, 'tag_name': tag_name})
 
 
 def login(request):
