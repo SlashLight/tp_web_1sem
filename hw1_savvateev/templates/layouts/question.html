@@ -4,13 +4,15 @@
                       <div class="col-3 p-2">
                         <div class="border w-100 mb-3" style="max-width: 190px; max-height: 190px; height: 150px">
                         <img
-                          src="{% static 'img/img.jpg' %}"
+                          {% if question.content.author.avatar %}      
+                          src="{{ question.content.author.avatar.url }}"
+                          {% endif %}
                           class="img-fluid rounded-start"
                           alt="..."
                         />
                         </div>
                         <div class="input-group flex-nowrap pt-1">
-                          <input type="number" class="form-control" value="5">
+                          <input type="number" class="form-control" value="{{ question.content.likes }}">
                         </div>
                       </div>
                       <div class="col-md-8">
@@ -19,13 +21,15 @@
                             <a href="{% url 'question' question.id%}"> {{ question.title }} {{ question.id }}</a>
                           </h3>
                           <p class="card-text">
-                            {{ question.text }}
+                            {{ question.content.content }}
                           </p>
                           <div class="row d-flex position-absolute bottom-0">
-                            <a class="col-7" href="/question.html">answers (3)</a>
+                            <a class="col-7" href="{% url 'question' question.id %}">answers (3)</a>
                             <div class="col-5">
                                 <span>Tags</span>
-                                <a href="{% url 'tag' question.tags %}">{{ question.tags }}</a>
+                                {% for tag in question.tags.all %}
+                                <a href="{% url 'tag' tag %}">{{ tag }}</a>
+                                {% endfor %}
                             </div>
                           </div>
                         </div>

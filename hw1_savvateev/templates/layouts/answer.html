@@ -4,22 +4,24 @@
                       <div class="col-3 p-2">
                         <div class="border mb-3" style="height: 100px; width: 100px;">
                         <img
-                          src="{% static 'img/img.jpg' %}"
+                          {% if answer.content.author.avatar %}      
+                          src="{{ answer.content.author.avatar.url }}"
+                          {% endif %}
                           class="img-fluid rounded-start"
                           alt="..."
                         />
                         </div>
                         <div class="input-group flex-nowrap">
-                          <input type="number" class="form-control" value="5">
+                          <input type="number" class="form-control" value="{{ answer.content.likes }}">
                         </div>
                       </div>
                       <div class="col-md-8">
                         <div class="card-body">
                           <p class="card-text">
-                            I will build my own moon park with black-jack and...
+                            {{ answer.content.content }}
                           </p>
                           <div class="position-absolute bottom-0 pb-3">
-                            <input type="checkbox" value="checked" name="correct">
+                            <input type="checkbox" value="{{ answer.correct }}" name="correct">
                             <label>Correct!</label>
                           </div>
                         </div>

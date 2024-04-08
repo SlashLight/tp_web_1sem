@@ -1,15 +1,10 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
+from app.models import Question, Answer
+
+
 # Create your views here.
-QUESTIONS = [
-    {
-        "title": f"Question{i}",
-        "id": i,
-        "text": f"This is the question number {i}",
-        "tags": f"tag{i % 2}"
-    } for i in range(30)
-]
 
 
 def paginate(questions_list, request, per_page=5):
@@ -20,26 +15,26 @@ def paginate(questions_list, request, per_page=5):
 
 
 def index(request):
-    page_obj = paginate(QUESTIONS, request)
+    questions = Question.objects.get_new_questions()
+    page_obj = paginate(questions, request)
     return render(request, 'index.html', {"questions": page_obj})
 
 
 def hot(request):
-    page_obj = paginate(QUESTIONS[:15], request)
+    questions = Question.objects.get_hot_questions()
+    page_obj = paginate(questions, request)
     return render(request, 'hot.html', {"questions": page_obj})
 
 
 def question(request, question_id):
-    item = QUESTIONS[question_id]
-    return render(request, 'question_detail.html', {"question": item})
+    item = Question.objects.get_question_by_id(question_id)
+    answers = Answer.objects.get_related_answers(question_id)
+    return render(request, 'question_detail.html', {"question": item, "answers": answers})
 
 
 def tag(request, tag_name):
-    items = []
-    for item in QUESTIONS:
-        if item["tags"] == tag_name:
-            items.append(item)
-    page_obj = paginate(items, request)
+    questions = Question.objects.get_questions_by_tag(tag_name)
+    page_obj = paginate(questions, request)
     return render(request, 'tag.html', {'questions': page_obj, 'tag_name': tag_name})
 
 
