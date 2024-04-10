@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UserManager
 
 
 # Create your models here.
@@ -24,11 +24,18 @@ class AnswerManager(models.Manager):
         return self.filter(related_question__id=question_id)
 
 
+class Post_Manager(models.Manager):
+    def get_by_id(self, post_id):
+        return self.get(id=post_id)
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     avatar = models.ImageField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = UserManager()
 
     def __str__(self):
         return self.user.username
@@ -40,6 +47,8 @@ class Post(models.Model):
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = Post_Manager()
 
     def __str__(self):
         return self.content[:20]
@@ -82,6 +91,6 @@ class Like(models.Model):
     LIKE_CHOICES = ((1, 'Like'), (2, 'Dislike'))
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
     user_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    like = models.CharField(max_length=1, choices=LIKE_CHOICES)
+    like = models.CharField(max_length=1, choices=LIKE_CHOICES, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
