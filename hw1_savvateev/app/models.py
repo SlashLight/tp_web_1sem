@@ -91,6 +91,6 @@ class Like(models.Model):
     LIKE_CHOICES = ((1, 'Like'), (2, 'Dislike'))
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
     user_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    like = models.CharField(max_length=1, choices=LIKE_CHOICES, default=1)
+    like = models.CharField(max_length=1, choices=LIKE_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
