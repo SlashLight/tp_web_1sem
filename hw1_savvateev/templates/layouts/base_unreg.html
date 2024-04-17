@@ -1,10 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Ask me</title>
-    <link rel="stylesheet" href="../static/css/bootstrap.css" />
+    <link rel="stylesheet" href="../../static/css/bootstrap.css" />
 </head>
 
 <body>
@@ -16,41 +18,18 @@
             <button class="btn btn-outline-success" type="submit">ASK!</button>
           </form>
 
-          <div class="d-flex justify-content-between gap-3">
-            <div class="border">
-                <img src="img.jpg" width = "50" height="50"/>
-            </div>
-            <div class="d-flex flex-column justify-content-between">
-                <div>Dr.Pepper</div>
-                <div>
-                    <a = href="./settings.html">Settings</a>
-                    <a = href="./logout.html">Log out</a>
-                </div>
-            </div>
+          <div class="d-flex justify-content-between gap-4 me-5">
+            <a href="/login">log in</a>
+            <a href="/signup">register</a>
           </div>
         </div>
       </nav>
 
-      <main = class="container-sm-fluid container-lg mt-3">
-          
-          <div class="row">
-              <div class="col-8">
-                <div class="d-flex gap-3 align-items-center">
-                    <h1>New Question</h1>
-                    <a href="/hot.html">Hot Questions</a>
-                </div>
-                
+      <main class="container-sm-fluid container-lg mt-3">
 
-                <nav aria-label="Page navigation example">
-                  <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                  </ul>
-                </nav>
-            </div>
+          <div class="row">
+              {% block content %}
+              {% endblock %}
             <div class="col-4">
                 <h3>Popular tags</h3>
                 <div class="row">
