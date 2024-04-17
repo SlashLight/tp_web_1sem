@@ -4,9 +4,9 @@
                 {% include 'layouts/question.html' with item=question %}
 
                 <hr>
-
-                {% include 'layouts/answer.html' %}
-
+                {% for answer in answers %}
+                    {% include 'layouts/answer.html' %}
+                {% endfor %}
                 <div>
                     <div class="form-floating mb-2">
                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
