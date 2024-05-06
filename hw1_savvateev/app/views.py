@@ -1,7 +1,16 @@
+from django.contrib import auth
+from django.contrib.auth import authenticate, login
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
-from app.models import Question, Answer
+from hw1_savvateev.app.forms import LoginForm, RegisterForm
+from hw1_savvateev.app.models import Question, Answer
+
+from hw1_savvateev.app.forms import ProfileForm
+from hw1_savvateev.app.models import Profile
 
 
 # Create your views here.
@@ -29,7 +38,8 @@ def hot(request):
 def question(request, question_id):
     item = Question.objects.get_question_by_id(question_id)
     answers = Answer.objects.get_related_answers(question_id)
-    return render(request, 'question_detail.html', {"question": item, "answers": answers})
+    page_obj = paginate(answers, request)
+    return render(request, 'question_detail.html', {"question": item, "answers": page_obj})
 
 
 def tag(request, tag_name):
@@ -38,12 +48,37 @@ def tag(request, tag_name):
     return render(request, 'tag.html', {'questions': page_obj, 'tag_name': tag_name})
 
 
-def login(request):
-    return render(request, 'login.html')
+@require_http_methods(["GET", "POST"])
+def log_in(request):
+    if request.method == 'GET':
+        login_form = LoginForm()
+    if request.method == 'POST':
+        login_form = LoginForm(data=request.POST)
+        if login_form.is_valid():
+            user = authenticate(request, **login_form.cleaned_data)
+            if user and user.is_active:
+                login(request, user)
+                return redirect(reverse('index'))
+    return render(request, 'login.html', context={'form': login_form})
 
 
-def signup(request):
-    return render(request, 'signup.html')
+def sign_up(request):
+    if request.method == 'GET':
+        register_form = RegisterForm()
+    if request.method == 'POST':
+        register_form = RegisterForm(data=request.POST)
+        if register_form.is_valid():
+            user = register_form.save()
+            if user:
+                return redirect(reverse('index'))
+            else:
+                register_form.add_error(field=None, error='Error saving user')
+    return render(request, 'signup.html', context={'form': register_form})
+
+
+def logout(request):
+    auth.logout(request)
+    return redirect(reverse('login'))
 
 
 def ask(request):
@@ -51,4 +86,8 @@ def ask(request):
 
 
 def settings(request):
-    return render(request, 'settings.html')
+    profile = Profile.profiles.get_by_username(request.user.username)
+
+    if request.method == 'GET':
+        settingsForm = ProfileForm()
+    return render(request, 'settings.html', context={'form': settingsForm})

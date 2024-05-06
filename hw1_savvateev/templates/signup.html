@@ -1,77 +1,14 @@
-{% extends 'layouts/base_unreg.html' %}
+{% extends 'layouts/base.html' %}
+{% load django_bootstrap5 %}
 {% block content %}
             <div class="col-8">
                 <div class="d-flex flex-column">
                       <h1>Registration</h1>
-                      <p class="text-danger">Sorry, this email address allready registred!</p>
                 </div>
-
-                <div class="row justify-content-between mb-4">
-                    <div class="d-flex align-items-center col-3">
-                        <label for="login" class="col-form-label">Login</label>
-                    </div>
-
-                    <div class="col-9">
-                        <input class="form-control" id="login" type="text" placeholder="Login" value="slash_light">
-                    </div>
-                </div>
-
-                <div class="row justify-content-between mb-4">
-                    <div class="d-flex align-items-center col-3">
-                        <label for="email" class="col-form-label">Email</label>
-                    </div>
-
-                    <div class="col-9">
-                        <input class="form-control" id="email" type="email" placeholder="Email" value="slashlight@mail.ru">
-                    </div>
-                </div>
-
-                <div class="row justify-content-between mb-4">
-                    <div class="d-flex align-items-center col-3">
-                        <label for="nickname" class="col-form-label">Nickname</label>
-                    </div>
-
-                    <div class="col-9">
-                        <input class="form-control" id="nickname" type="text" placeholder="Nickname" value="slashlight">
-                    </div>
-                </div>
-
-                <div class="row justify-content-between mb-4">
-                    <div class="d-flex align-items-center col-3">
-                        <label for="password" class="col-form-label">Password</label>
-                    </div>
-
-                    <div class="col-9">
-                        <input class="form-control" id="password" type="password" placeholder="Password" value="11111111">
-                    </div>
-                </div>
-
-                <div class="row justify-content-between mb-4">
-                    <div class="d-flex align-items-center col-3">
-                        <label for="repeat" class="col-form-label">Repeat password</label>
-                    </div>
-
-                    <div class="col-9">
-                        <input type="password" id="repeat" class="form-control" value="11111111">
-                    </div>
-                </div>
-
-                <div class="row justify-content-between mb-4">
-                    <div class=" col-3">
-                        <label for="formFile" class="col-form-label">Upload avatar</label>
-                    </div>
-
-                    <div class="col-9 mb-3">
-                        <input class="form-control" type="file" id="formFile">
-                      </div>
-                      
-                </div>
-
-                <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-9">
-                        <button class="btn btn-outline-dark" type="submit">Register!</button>
-                    </div>
-                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <button class="btn btn-outline-dark" type="submit">Register!</button>
+                </form>
             </div>
 {% endblock %}

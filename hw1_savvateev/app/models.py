@@ -29,13 +29,19 @@ class Post_Manager(models.Manager):
         return self.get(id=post_id)
 
 
+class Profile_Manager(models.Manager):
+    def get_by_username(self, username):
+        return self.get(user__username=username)
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     avatar = models.ImageField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    nickname = models.CharField(max_length=50, default='John Doe')
     objects = UserManager()
+    profiles = Profile_Manager()
 
     def __str__(self):
         return self.user.username
