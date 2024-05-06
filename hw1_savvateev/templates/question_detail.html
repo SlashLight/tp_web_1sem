@@ -7,6 +7,8 @@
                 {% for answer in answers %}
                     {% include 'layouts/answer.html' %}
                 {% endfor %}
+                {% include "layouts/pagination.html" with page_obj=answers %}
+
                 <div>
                     <div class="form-floating mb-2">
                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>

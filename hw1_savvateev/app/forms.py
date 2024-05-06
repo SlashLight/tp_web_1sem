@@ -1,8 +1,10 @@
 import django.forms
+from django.forms import inlineformset_factory
 from django import forms
 from django.contrib.auth.models import User
+from django.db import models
 
-from hw1_savvateev.app.models import Profile
+from app.models import Profile
 
 
 class LoginForm(forms.Form):
@@ -61,10 +63,47 @@ class RegisterForm(forms.ModelForm):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data.get('password'))
         user.save()
+        profile = Profile(
+            user=user,
+            nickname=self.cleaned_data.get('nickname'),
+            avatar=self.cleaned_data.get('avatar'),
+        )
+        profile.save()
         return user
 
 
 class ProfileForm(forms.ModelForm):
+    login = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+
     class Meta:
         model = Profile
         fields = ['login', 'email', 'nickname', 'avatar']
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(ProfileForm, self).__init__(*args, **kwargs)
+
+    def clean_login(self):
+        old_username = self.request.user.get_username()
+        username = self.cleaned_data.get('login')
+        if username is None:
+            raise forms.ValidationError('Please enter your username')
+
+        db_user = User.objects.filter(username=username)
+        if db_user.exists() and username != old_username:
+            raise forms.ValidationError('This username already exists')
+        return username
+
+    def clean(self):
+        super().clean()
+
+    def save(self, commit=True):
+        userProfile = Profile.profiles.get_by_username(self.request.user.username)
+        userProfile.user.username = self.cleaned_data.get('login')
+        userProfile.user.email = self.cleaned_data.get('email')
+        userProfile.nickname = self.cleaned_data.get('nickname')
+        userProfile.avatar = self.cleaned_data.get('avatar')
+        userProfile.user.save()
+        userProfile.save()
+        return userProfile

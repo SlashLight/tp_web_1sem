@@ -6,11 +6,11 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from hw1_savvateev.app.forms import LoginForm, RegisterForm
-from hw1_savvateev.app.models import Question, Answer
+from app.forms import LoginForm, RegisterForm
+from app.models import Question, Answer
 
-from hw1_savvateev.app.forms import ProfileForm
-from hw1_savvateev.app.models import Profile
+from app.forms import ProfileForm
+from app.models import Profile
 
 
 # Create your views here.
@@ -87,7 +87,19 @@ def ask(request):
 
 def settings(request):
     profile = Profile.profiles.get_by_username(request.user.username)
-
     if request.method == 'GET':
-        settingsForm = ProfileForm()
+        settingsForm = ProfileForm( initial={
+            'login': profile.user.username,
+            'email': profile.user.email,
+            'nickname': profile.nickname,
+            'avatar': profile.avatar,
+        })
+    if request.method == 'POST':
+        settingsForm = ProfileForm(data=request.POST, request=request)
+        if settingsForm.is_valid():
+            user = settingsForm.save()
+            if user:
+                return redirect(reverse('index'))
+            else:
+                settingsForm.add_error(field=None, error='Error saving user')
     return render(request, 'settings.html', context={'form': settingsForm})
