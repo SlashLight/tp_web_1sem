@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.db import models
 
-from app.models import Profile
+from app.models import Profile, Question, Post, Tag, Answer
 
 
 class LoginForm(forms.Form):
@@ -74,8 +74,7 @@ class RegisterForm(forms.ModelForm):
 
 class ProfileForm(forms.ModelForm):
     login = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
     class Meta:
         model = Profile
         fields = ['login', 'email', 'nickname', 'avatar']
@@ -107,3 +106,86 @@ class ProfileForm(forms.ModelForm):
         userProfile.user.save()
         userProfile.save()
         return userProfile
+
+
+class Tags:
+    pass
+
+
+class QuestionForm(forms.ModelForm):
+    tags = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Question
+        fields = ['title', 'text', 'tags']
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(QuestionForm, self).__init__(*args, **kwargs)
+
+    def clean_tags(self):
+        tags = self.cleaned_data.get('tags')
+        if tags is None:
+            raise forms.ValidationError('Please enter tags')
+
+        slice_of_tags = tags.split(", ")
+        if len(slice_of_tags) > 3:
+            raise forms.ValidationError('Too many tags')
+
+        return slice_of_tags
+
+    def clean(self):
+        super().clean()
+
+    def save(self, commit=True):
+        tags = []
+        for tag in self.cleaned_data.get('tags'):
+            obj, _ = Tag.objects.get_or_create(name=tag)
+            tags.append(obj)
+        author = Profile.profiles.get_by_username(self.request.user.username)
+        post = Post(
+            content=self.cleaned_data.get('text'),
+            likes=0,
+            author=author,
+        )
+        post.save()
+        question = Question(
+            content=post,
+            title=self.cleaned_data.get('title'),
+        )
+        question.save()
+        question.tags.set(tags)
+        return question
+
+
+class answerForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['content']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.question = kwargs.pop('question', None)
+        super(answerForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        content = self.cleaned_data.get('content')
+        if content is None:
+            raise forms.ValidationError('Please enter your answer')
+
+    def save(self, commit=True):
+        author = Profile.profiles.get_by_username(self.user.username)
+        post = Post(
+            content=self.cleaned_data.get('content'),
+            likes=0,
+            author=author,
+        )
+        post.save()
+        answer = Answer(
+            content=post,
+            related_question=self.question,
+        )
+        answer.save()
+        return answer

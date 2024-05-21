@@ -1,5 +1,5 @@
 {% load static %}
-<article class="card border-info mb-3 w-100 ps-2">
+<article class="card border-info mb-3 w-100 ps-2" data-post-id="{{ answer.content.id }}>
                     <div class="row g-0">
                       <div class="col-3 p-2">
                         <div class="border mb-3" style="height: 100px; width: 100px;">
@@ -12,7 +12,13 @@
                         />
                         </div>
                         <div class="input-group flex-nowrap">
-                          <input type="number" class="form-control" value="{{ answer.content.likes }}">
+                         <div class="pe-2">
+                                <p class="card-text"> Likes: <span class="like-counter">{{ answer.content.likes }} </span></p>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn btn-outline-primary like-button">Like</button>
+                            </div>
                         </div>
                       </div>
                       <div class="col-md-8">

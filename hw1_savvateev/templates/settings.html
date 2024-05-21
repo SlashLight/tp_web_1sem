@@ -7,7 +7,7 @@
                       <h1>Settings: {{ user.nickname }}</h1>
                 </div>
 
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {% bootstrap_form form %}
                      <button class="btn btn-outline-dark" type="submit">Save!</button>

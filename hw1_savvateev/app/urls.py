@@ -11,5 +11,6 @@ urlpatterns = [
     path('signup/', views.sign_up, name='signup'),
     path('logout/', views.logout, name='logout'),
     path('ask/', views.ask, name='ask'),
-    path('settings/', views.settings, name='settings')
+    path('settings/', views.settings, name='settings'),
+    path('<int:post_id>/like/', views.like, name='like'),
 ]

@@ -23,7 +23,6 @@ class AnswerManager(models.Manager):
     def get_related_answers(self, question_id):
         return self.filter(related_question__id=question_id)
 
-
 class Post_Manager(models.Manager):
     def get_by_id(self, post_id):
         return self.get(id=post_id)
@@ -36,7 +35,7 @@ class Profile_Manager(models.Manager):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
-    avatar = models.ImageField(null=True, blank=True)
+    avatar = models.ImageField(null=True, blank=True, upload_to="img")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     nickname = models.CharField(max_length=50, default='John Doe')
@@ -65,6 +64,7 @@ class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects=models.Manager
     def __str__(self):
         return self.name
 
