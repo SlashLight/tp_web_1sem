@@ -17,16 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from askme_savvateev import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('app.urls'), name='index'),
     path('admin/', admin.site.urls),
-    # path('hot/', include('app.urls'), name='hot'),
-    # path('question/<int:question_id>', include('app.urls'), name='question'),
-    # path('tag/<str:tag_name>', include('app.urls'), name='tag'),
-    # path('login/', include('app.urls'), name='login'),
-    # path('signup/', include('app.urls'), name='signup'),
-    # path('ask/', include('app.urls'), name='ask'),
-    # path('settings/', include('app.urls'), name='settings')
 ]
+
+if settings.DEBUG:
+   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+   #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

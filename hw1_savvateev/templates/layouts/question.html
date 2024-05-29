@@ -1,5 +1,5 @@
 {% load static %}
-<article class="card border-secondary mb-3 w-100">
+<article class="card border-secondary mb-3 w-100" data-post-id="{{ question.content.id }}">
                     <div class="row g-0">
                       <div class="col-3 p-2">
                         <div class="border w-100 mb-3" style="max-width: 190px; max-height: 190px; height: 150px">
@@ -12,7 +12,13 @@
                         />
                         </div>
                         <div class="input-group flex-nowrap pt-1">
-                          <input type="number" class="form-control" value="{{ question.content.likes }}">
+                            <div class="pe-2">
+                                <p class="card-text"> Likes: <span class="like-counter">{{ question.content.likes }} </span></p>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn btn-outline-primary like-button">Like</button>
+                            </div>
                         </div>
                       </div>
                       <div class="col-md-8">
@@ -24,7 +30,7 @@
                             {{ question.content.content }}
                           </p>
                           <div class="row d-flex position-absolute bottom-0">
-                            <a class="col-7" href="{% url 'question' question.id %}">answers (3)</a>
+                            <a class="col-7" href="{% url 'question' question.id %}">answers ({{ question.answer_set.count }})</a>
                             <div class="col-5">
                                 <span>Tags</span>
                                 {% for tag in question.tags.all %}

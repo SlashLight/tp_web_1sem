@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load django_bootstrap5 %}
 {% block content %}
             <div class="col-8">
                 {% include 'layouts/question.html' with item=question %}
@@ -7,12 +8,18 @@
                 {% for answer in answers %}
                     {% include 'layouts/answer.html' %}
                 {% endfor %}
+                {% include "layouts/pagination.html" with page_obj=answers %}
+
+                {% if user.is_authenticated %}
                 <div>
                     <div class="form-floating mb-2">
-                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-                        <label for="floatingTextarea2">Enter your answer here..</label>
-                      </div>
-                    <p><button class="btn btn-outline-secondary" type="submit">Answer</button></p>
+                        <form method="post">
+                            {% csrf_token %}
+                            {% bootstrap_form form %}
+                            <p><button class="btn btn-outline-secondary" type="submit">Answer</button></p>
+                        </form>
+                    </div>
                 </div>
+                {% endif %}
             </div>
 {% endblock %}

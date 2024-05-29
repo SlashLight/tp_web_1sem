@@ -1,37 +1,17 @@
-{% extends 'layouts/base_unreg.html' %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
 {% block content %}
             <div class="col-8">
                 <div class="d-flex flex-column">
                       <h1>Log In</h1>
-                      <p class="text-danger">Sorry, wrong password!</p>
                 </div>
-
-                <div class="row justify-content-between mb-4">
-                    <div class="d-flex align-items-center col-3">
-                        <label for="login" class="col-form-label">Login</label>
-                    </div>
-
-                    <div class="col-9">
-                        <input class="form-control" id="login" type="text" placeholder="Login" value="slash_light">
-                    </div>
-                </div>
-
-                <div class="row justify-content-between mb-4">
-                    <div class="d-flex align-items-center col-3">
-                        <label for="password" class="col-form-label">Password</label>
-                    </div>
-
-                    <div class="col-9">
-                        <input class="form-control" id="password" type="password" placeholder="Password" value="11111111">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-9 flex-column">
-                        <div class="mb-3"><button class="btn btn-outline-dark" type="submit">Log in!</button></div>
-                        <div><a href="/signup.html">create new account</a></div>
-                    </div>
-                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <button class="btn btn-outline-dark" type="submit">Log in!</button>
+                </form>
+                <div><a href="{% url 'signup' %}">create new account</a></div>
             </div>
 {% endblock %}
