@@ -29,21 +29,27 @@ popular_tags = Tag.objects.annotate(t_count=Count('question')).order_by('-t_coun
 
 
 def index(request):
-    user = Profile.objects.get(user=request.user)
+    user = ''
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
     questions = Question.objects.get_new_questions()
     page_obj = paginate(questions, request)
     return render(request, 'index.html', {"questions": page_obj, "author": user, "popular_tags": popular_tags})
 
 
 def hot(request):
-    user = Profile.objects.get(user=request.user)
+    user = ''
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
     questions = Question.objects.get_hot_questions()
     page_obj = paginate(questions, request)
     return render(request, 'hot.html', {"questions": page_obj, "author": user, "popular_tags": popular_tags})
 
 
 def question(request, question_id):
-    user = Profile.objects.get(user=request.user)
+    user = ''
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
     item = Question.objects.get_question_by_id(question_id)
     answers = Answer.objects.get_related_answers(question_id)
     page_obj = paginate(answers, request)
@@ -62,7 +68,9 @@ def question(request, question_id):
 
 
 def tag(request, tag_name):
-    user = Profile.objects.get(user=request.user)
+    user = ''
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
     questions = Question.objects.get_questions_by_tag(tag_name)
     page_obj = paginate(questions, request)
     return render(request, 'tag.html',
@@ -103,7 +111,9 @@ def logout(request):
 
 
 def ask(request):
-    user = Profile.objects.get(user=request.user)
+    user = ''
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
     if request.method == 'GET':
         ask_form = QuestionForm()
     if request.method == 'POST':
@@ -118,7 +128,9 @@ def ask(request):
 
 
 def settings(request):
-    user = Profile.objects.get(user=request.user)
+    user = ''
+    if request.user.is_authenticated:
+        user = Profile.objects.get(user=request.user)
     profile = Profile.profiles.get_by_username(request.user.username)
     if request.method == 'GET':
         settingsForm = ProfileForm(initial={
@@ -142,9 +154,20 @@ def settings(request):
 def like(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     profile = Profile.objects.get(user=request.user)
-    post_like, post_like_created = Like.objects.get_or_create(post_id=post_id, user_id=profile.id, like=1)
-
+    post_like, post_like_created = Like.objects.get_or_create(post_id=post, user_id=profile)
     if not post_like_created:
         post_like.delete()
-
+        post.likes -= 1
+    else:
+        post.likes += 1
+    post.save()
     return JsonResponse({'likes_count': post.likes})
+
+def correct(request, answer_id):
+    answer = get_object_or_404(Answer, pk=answer_id)
+    if not answer.correct:
+        answer.correct = True
+    else:
+        answer.correct = False
+    answer.save()
+    return JsonResponse({'success': 'true'})

@@ -1,6 +1,6 @@
 {% load static %}
-<article class="card border-info mb-3 w-100 ps-2" data-post-id="{{ answer.content.id }}>
-                    <div class="row g-0">
+<article class="card answer border-info mb-3 w-100 ps-2" data-post-id="{{ answer.content.id }}" data-answer-id="{{ answer.id }}">
+                    <div class="row g-0 ">
                       <div class="col-3 p-2">
                         <div class="border mb-3" style="height: 100px; width: 100px;">
                         <img
@@ -26,10 +26,13 @@
                           <p class="card-text">
                             {{ answer.content.content }}
                           </p>
+                        {% if user == answer.related_question.content.author.user %}
                           <div class="position-absolute bottom-0 pb-3">
-                            <input type="checkbox" value="{{ answer.correct }}" name="correct">
+                            <input type="checkbox" class="answer-checkbox" name="correct" {% if answer.correct %} checked /{% endif %}>
                             <label>Correct!</label>
                           </div>
+                        {% endif %}
+
                         </div>
                       </div>
                     </div>

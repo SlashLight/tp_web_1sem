@@ -13,4 +13,5 @@ urlpatterns = [
     path('ask/', views.ask, name='ask'),
     path('settings/', views.settings, name='settings'),
     path('<int:post_id>/like/', views.like, name='like'),
+    path('<int:answer_id>/correct/', views.correct, name='correct'),
 ]
